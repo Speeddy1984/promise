@@ -1,24 +1,14 @@
 import json from "./parser";
 import read from "./reader";
+import GameSaving from './gamesaving';
 
-(async () => {
-  try {
-    const data = await read();
-    const parsedData = await json(data);
-    const parsedJSON = JSON.parse(parsedData);
-    
-    return {
-      id: parsedJSON.id,
-      created: parsedJSON.created,
-      userInfo: {
-        id: parsedJSON.userInfo.id,
-        name: parsedJSON.userInfo.name,
-        level: parsedJSON.userInfo.level,
-        points: parsedJSON.userInfo.points,
-      },
-    };
-
-  } catch (error) {
-    throw new Error (error.message);
+export default class GameSavingLoader {
+  static load() {
+    return read()
+      .then((data) => json(data))
+      .then((parsedData) => {
+        const parsedJSON = JSON.parse(parsedData);
+        return new GameSaving(parsedJSON);
+      });
   }
-})();
+}
